@@ -1,5 +1,6 @@
 import styles from "./Select.module.css";
 import { useState, useEffect, useRef } from "react";
+import classNames from "classnames";
 
 export type SelectOptions = {
   label: string;
@@ -34,6 +35,7 @@ const Select = ({ multiple, value, onChange, options }: SelectProps) => {
   const selectOption = (option: SelectOptions) => {
     if (multiple) {
       if (value.includes(option)) {
+        console.log(value);
         onChange(value.filter((o) => o !== option));
       } else {
         onChange([...value, option]);
@@ -120,7 +122,11 @@ const Select = ({ multiple, value, onChange, options }: SelectProps) => {
       </button>
       <div className={styles.divider}></div>
       <div className={styles.caret}></div>
-      <ul className={`${styles.options} ${isOpen && styles.show}`}>
+      <ul
+        className={classNames(styles.options, {
+          [styles.show]: isOpen,
+        })}
+      >
         {options.map((option, index) => (
           <li
             onClick={(e) => {
@@ -129,9 +135,10 @@ const Select = ({ multiple, value, onChange, options }: SelectProps) => {
               setIsOpen(false);
             }}
             key={option.value}
-            className={`${styles.option} ${
-              isOptionSelected(option) && styles.selected
-            } ${index === highlightedIndex && styles.highlighted}`}
+            className={classNames(styles.option, {
+              [styles.selected]: isOptionSelected(option),
+              [styles.highlighted]: highlightedIndex === index,
+            })}
             onMouseEnter={() => setHighlightedIndex(index)}
           >
             {option.label}
